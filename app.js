@@ -21,9 +21,21 @@ function loadBooks() {
       return [];
     }
     const parsed = JSON.parse(data);
-    // Ensure parsed data is an array and sort newest first by createdAt timestamp
+    // Ensure parsed data is an array
     if (Array.isArray(parsed)) {
-      return parsed.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      const validStatuses = ['To read', 'Reading', 'Finished'];
+      // Keep only valid objects with string title, string author, and valid status
+      const validBooks = parsed.filter((item) => {
+        return (
+          item !== null &&
+          typeof item === 'object' &&
+          typeof item.title === 'string' &&
+          typeof item.author === 'string' &&
+          validStatuses.includes(item.status)
+        );
+      });
+      // Sort newest first by createdAt timestamp
+      return validBooks.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
     }
     return [];
   } catch (error) {
@@ -40,6 +52,14 @@ function saveBooks() {
   } catch (error) {
     console.error('Failed to save books to localStorage:', error);
   }
+}
+
+// Generate a unique book ID (crypto.randomUUID with fallback)
+function generateBookId() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
 // In-memory list of books initialized from localStorage
@@ -259,7 +279,7 @@ bookForm.addEventListener('submit', (event) => {
 
   // Create book object with unique ID and timestamp (author stored as string)
   const newBook = {
-    id: Date.now().toString(),
+    id: generateBookId(),
     title: title,
     author: String(author),
     status: status,
@@ -271,6 +291,9 @@ bookForm.addEventListener('submit', (event) => {
 
   // Save updated list to localStorage
   saveBooks();
+
+  // Clear search box so the full list and newly added book are visible
+  searchInput.value = '';
 
   // Update the UI
   renderBooks();
