@@ -5,6 +5,7 @@ const authorInput = document.getElementById('book-author');
 const statusSelect = document.getElementById('book-status');
 const bookList = document.getElementById('book-list');
 const searchInput = document.getElementById('search-input');
+const bookCounts = document.getElementById('book-counts');
 
 const titleError = document.getElementById('title-error');
 const authorError = document.getElementById('author-error');
@@ -44,9 +45,39 @@ function saveBooks() {
 // In-memory list of books initialized from localStorage
 const books = loadBooks();
 
+// --- Update Counts Function ---
+// Updates the summary line with counts of all saved books
+function updateCounts() {
+  // If there are no books at all
+  if (books.length === 0) {
+    bookCounts.textContent = '0 books';
+    return;
+  }
+
+  let finished = 0;
+  let reading = 0;
+  let toRead = 0;
+
+  // Count all saved books (unaffected by active search query)
+  books.forEach((book) => {
+    if (book.status === 'Finished') {
+      finished++;
+    } else if (book.status === 'Reading') {
+      reading++;
+    } else if (book.status === 'To read') {
+      toRead++;
+    }
+  });
+
+  bookCounts.textContent = `${finished} finished, ${reading} reading, ${toRead} to read`;
+}
+
 // --- Render Function ---
 // Renders the list of books to the page (with search filtering)
 function renderBooks() {
+  // Always update counts of all saved books
+  updateCounts();
+
   // Clear existing items
   bookList.textContent = '';
 

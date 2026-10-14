@@ -136,7 +136,15 @@ select:focus {
 
 /* Search input container */
 .search-container {
+  margin-bottom: 12px;
+}
+
+/* Book counts summary line */
+.book-counts {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
   margin-bottom: 16px;
+  font-weight: 500;
 }
 
 /* Book List styling */
