@@ -101,6 +101,10 @@ function renderBooks() {
     info.appendChild(titleEl);
     info.appendChild(authorEl);
 
+    // Action buttons container
+    const actions = document.createElement('div');
+    actions.className = 'book-actions';
+
     // Status dropdown (safely created and populated)
     const statusDropdown = document.createElement('select');
     statusDropdown.className = 'status-select status-' + book.status.toLowerCase().replace(/\s+/g, '-');
@@ -125,9 +129,33 @@ function renderBooks() {
       renderBooks();
     });
 
+    // Delete button
+    const deleteBtn = document.createElement('button');
+    deleteBtn.type = 'button';
+    deleteBtn.className = 'btn-delete';
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.setAttribute('aria-label', 'Delete ' + book.title);
+
+    // Confirm and delete strictly by unique book.id
+    deleteBtn.addEventListener('click', () => {
+      const confirmed = window.confirm('Delete this book?');
+      if (confirmed) {
+        // Find index by unique id
+        const index = books.findIndex((b) => b.id === book.id);
+        if (index !== -1) {
+          books.splice(index, 1);
+          saveBooks();
+          renderBooks();
+        }
+      }
+    });
+
+    actions.appendChild(statusDropdown);
+    actions.appendChild(deleteBtn);
+
     // Assemble card
     card.appendChild(info);
-    card.appendChild(statusDropdown);
+    card.appendChild(actions);
 
     bookList.appendChild(card);
   });
