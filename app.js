@@ -124,7 +124,9 @@ titleInput.addEventListener('input', () => {
 });
 
 authorInput.addEventListener('input', () => {
-  if (authorInput.value.trim() !== '') {
+  const currentVal = authorInput.value.trim();
+  // Clear error once author has non-empty text with at least one letter
+  if (currentVal !== '' && /[a-zA-Z\p{L}]/u.test(currentVal)) {
     authorError.textContent = '';
     authorInput.classList.remove('input-error');
   }
@@ -142,12 +144,13 @@ bookForm.addEventListener('submit', (event) => {
   event.preventDefault();
 
   const title = titleInput.value.trim();
-  const author = authorInput.value.trim();
+  // Ensure author is strictly a trimmed string
+  const author = String(authorInput.value).trim();
   const status = statusSelect.value;
 
   let isValid = true;
 
-  // Validate title
+  // Validate title (required, allows numbers like "1984")
   if (title === '') {
     titleError.textContent = 'Please enter a title';
     titleInput.classList.add('input-error');
@@ -157,9 +160,13 @@ bookForm.addEventListener('submit', (event) => {
     titleInput.classList.remove('input-error');
   }
 
-  // Validate author
+  // Validate author (required and must contain at least one letter)
   if (author === '') {
     authorError.textContent = 'Please enter an author';
+    authorInput.classList.add('input-error');
+    isValid = false;
+  } else if (!/[a-zA-Z\p{L}]/u.test(author)) {
+    authorError.textContent = 'Please enter a valid author name';
     authorInput.classList.add('input-error');
     isValid = false;
   } else {
@@ -172,11 +179,11 @@ bookForm.addEventListener('submit', (event) => {
     return;
   }
 
-  // Create book object with unique ID and timestamp
+  // Create book object with unique ID and timestamp (author stored as string)
   const newBook = {
     id: Date.now().toString(),
     title: title,
-    author: author,
+    author: String(author),
     status: status,
     createdAt: Date.now()
   };
