@@ -101,14 +101,33 @@ function renderBooks() {
     info.appendChild(titleEl);
     info.appendChild(authorEl);
 
-    // Status badge (safely set via textContent)
-    const statusBadge = document.createElement('span');
-    statusBadge.className = 'status-badge status-' + book.status.toLowerCase().replace(/\s+/g, '-');
-    statusBadge.textContent = book.status;
+    // Status dropdown (safely created and populated)
+    const statusDropdown = document.createElement('select');
+    statusDropdown.className = 'status-select status-' + book.status.toLowerCase().replace(/\s+/g, '-');
+    statusDropdown.setAttribute('aria-label', 'Status for ' + book.title);
+
+    // Exact status values to maintain compatibility
+    const statusOptions = ['To read', 'Reading', 'Finished'];
+    statusOptions.forEach((optionText) => {
+      const option = document.createElement('option');
+      option.value = optionText;
+      option.textContent = optionText;
+      if (optionText === book.status) {
+        option.selected = true;
+      }
+      statusDropdown.appendChild(option);
+    });
+
+    // Update status, persist to localStorage, and re-render
+    statusDropdown.addEventListener('change', (event) => {
+      book.status = event.target.value;
+      saveBooks();
+      renderBooks();
+    });
 
     // Assemble card
     card.appendChild(info);
-    card.appendChild(statusBadge);
+    card.appendChild(statusDropdown);
 
     bookList.appendChild(card);
   });
