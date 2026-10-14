@@ -4,6 +4,7 @@ const titleInput = document.getElementById('book-title');
 const authorInput = document.getElementById('book-author');
 const statusSelect = document.getElementById('book-status');
 const bookList = document.getElementById('book-list');
+const searchInput = document.getElementById('search-input');
 
 const titleError = document.getElementById('title-error');
 const authorError = document.getElementById('author-error');
@@ -44,23 +45,41 @@ function saveBooks() {
 const books = loadBooks();
 
 // --- Render Function ---
-// Renders the list of books to the page
+// Renders the list of books to the page (with search filtering)
 function renderBooks() {
   // Clear existing items
   bookList.textContent = '';
 
-  // Display empty state message when there are no books
+  // If there are no books at all
   if (books.length === 0) {
     const emptyState = document.createElement('p');
     emptyState.id = 'empty-state';
     emptyState.className = 'empty-state';
-    emptyState.textContent = 'No books added yet. Add your first book above!';
+    emptyState.textContent = 'No books yet. Add your first one above.';
     bookList.appendChild(emptyState);
     return;
   }
 
-  // Render each book (newest on top)
-  books.forEach((book) => {
+  // Filter books by title or author (case-insensitive, trimming outer spaces)
+  const query = searchInput.value.trim().toLowerCase();
+  const filteredBooks = books.filter((book) => {
+    return (
+      book.title.toLowerCase().includes(query) ||
+      book.author.toLowerCase().includes(query)
+    );
+  });
+
+  // If search returns no results
+  if (filteredBooks.length === 0) {
+    const noResults = document.createElement('p');
+    noResults.className = 'empty-state';
+    noResults.textContent = 'No books found';
+    bookList.appendChild(noResults);
+    return;
+  }
+
+  // Render each matching book (newest on top)
+  filteredBooks.forEach((book) => {
     // Card container
     const card = document.createElement('div');
     card.className = 'book-item';
@@ -109,6 +128,12 @@ authorInput.addEventListener('input', () => {
     authorError.textContent = '';
     authorInput.classList.remove('input-error');
   }
+});
+
+// --- Search Listener ---
+// Filter book list live as the user types
+searchInput.addEventListener('input', () => {
+  renderBooks();
 });
 
 // --- Form Submission Handler ---

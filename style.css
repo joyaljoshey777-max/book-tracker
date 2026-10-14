@@ -134,6 +134,11 @@ select:focus {
   background-color: var(--primary-hover);
 }
 
+/* Search input container */
+.search-container {
+  margin-bottom: 16px;
+}
+
 /* Book List styling */
 .book-list {
   display: flex;
