@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="app-header">
+      <h1>Book Tracker</h1>
+      <p class="subtitle">Track what you want to read, are reading, and have finished.</p>
+    </header>
+
+    <!-- Form to add a new book -->
+    <section class="card form-section">
+      <h2>Add a New Book</h2>
+      <form id="book-form" novalidate>
+        <div class="form-group">
+          <label for="book-title">Title *</label>
+          <input type="text" id="book-title" placeholder="e.g. To Kill a Mockingbird">
+          <span class="error-msg" id="title-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="book-author">Author *</label>
+          <input type="text" id="book-author" placeholder="e.g. Harper Lee">
+          <span class="error-msg" id="author-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="book-status">Status</label>
+          <select id="book-status">
+            <option value="To read">To read</option>
+            <option value="Reading">Reading</option>
+            <option value="Finished">Finished</option>
+          </select>
+        </div>
+
+        <button type="submit" id="add-btn" class="btn primary-btn">Add Book</button>
+      </form>
+    </section>
+
+    <!-- Section where books will be displayed -->
+    <section class="card list-section">
+      <div class="list-header">
+        <h2>Book List</h2>
+      </div>
+      <div id="book-list" class="book-list">
+        <p id="empty-state" class="empty-state">No books added yet. Add your first book above!</p>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
