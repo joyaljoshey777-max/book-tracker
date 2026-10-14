@@ -4,7 +4,7 @@ A simple, lightweight web app to track the books you want to read, are reading, 
 
 ## Live Demo
 
-<LIVE LINK HERE>
+[Open the live app](https://joyaljoshey777-max.github.io/book-tracker/)
 
 ## Features
 
