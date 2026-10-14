@@ -8,8 +8,40 @@ const bookList = document.getElementById('book-list');
 const titleError = document.getElementById('title-error');
 const authorError = document.getElementById('author-error');
 
-// In-memory list of books
-const books = [];
+// LocalStorage key
+const STORAGE_KEY = 'bookTracker.books';
+
+// Load books from localStorage with safe fallback for missing/corrupted data
+function loadBooks() {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    if (!data) {
+      return [];
+    }
+    const parsed = JSON.parse(data);
+    // Ensure parsed data is an array and sort newest first by createdAt timestamp
+    if (Array.isArray(parsed)) {
+      return parsed.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+    }
+    return [];
+  } catch (error) {
+    // Return empty list if data is corrupted or invalid JSON
+    console.error('Failed to load books from localStorage:', error);
+    return [];
+  }
+}
+
+// Save current books array to localStorage
+function saveBooks() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
+  } catch (error) {
+    console.error('Failed to save books to localStorage:', error);
+  }
+}
+
+// In-memory list of books initialized from localStorage
+const books = loadBooks();
 
 // --- Render Function ---
 // Renders the list of books to the page
@@ -126,6 +158,9 @@ bookForm.addEventListener('submit', (event) => {
 
   // Add new book to the start of the array (newest first)
   books.unshift(newBook);
+
+  // Save updated list to localStorage
+  saveBooks();
 
   // Update the UI
   renderBooks();
